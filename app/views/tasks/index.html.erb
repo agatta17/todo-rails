@@ -1,0 +1,31 @@
+<h1>Todo list</h1>
+<%= form_with url: "/tasks", method: :post do |form| %>
+  <div class="new-task-input">
+    <div>
+      <%= form.label :title %><br>
+      <%= form.text_field :title %>
+    </div>
+    <div>
+      <%= form.submit %>
+    </div>
+  </div>
+<% end %>
+<div class="tasks">
+  <% @tasks.each do |task| %>
+    <div class="task">
+      <%= form_with model: task, url: task_path(task), method: :patch, local: false do |form| %>
+        <%= form.hidden_field :done, value: false %>
+        <%= form.check_box :done, { checked: task.done, onchange: "this.form.submit();" }, true, false %>
+      <% end %>
+      <span class="<%= task.done ? 'done' : '' %>">
+        <%= task.title %>
+      </span>
+      <span class="delete-button">
+        <%= link_to "del", task, data: {
+                      turbo_method: :delete,
+                      turbo_confirm: "Are you sure?"
+                    } %>
+      </span>
+    </div>
+  <% end %>
+</div>
