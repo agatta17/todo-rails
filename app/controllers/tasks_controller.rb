@@ -5,8 +5,9 @@ class TasksController < ApplicationController
 
   def create
     title = params.require(:title)
-    Task.create(title: title, done: false)
+    task = Task.create(title: title, done: false)
     redirect_to root_path, status: :see_other
+    HardJob.perform_at(Time.zone.today.end_of_day, task.id)
   end
 
   def update
